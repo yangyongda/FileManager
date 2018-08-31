@@ -11,6 +11,10 @@ import android.view.MenuItem;
 import com.yyd.fjsd.filemanager.MyApplication;
 import com.yyd.fjsd.filemanager.R;
 import com.yyd.fjsd.filemanager.adapters.FileListAdapter;
+import com.yyd.fjsd.filemanager.asynctask.CopyFileTask;
+
+import java.util.Collection;
+import java.util.Iterator;
 
 public class ActionModeCallback implements ActionMode.Callback {
 
@@ -36,8 +40,13 @@ public class ActionModeCallback implements ActionMode.Callback {
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         switch (item.getItemId()){
-            case R.id.homeAsUp:
-                Log.v("yang", "homeAsUP");
+            case R.id.copy:
+                MyApplication.getInstance().runStatus = RunStatus.COPY_MODE;
+                mAdapter.notifyDataSetChanged();
+                break;
+            case R.id.cut:
+                break;
+            case R.id.delete:
                 break;
         }
         return false;
@@ -45,7 +54,9 @@ public class ActionModeCallback implements ActionMode.Callback {
 
     @Override
     public void onDestroyActionMode(ActionMode mode) {
+        //Log.v("yang", "DestroyActionMode");
         MyApplication.getInstance().runStatus = RunStatus.NORMAL_MODE; //进入正常模式
         mAdapter.notifyDataSetChanged(); //刷新界面
     }
+
 }

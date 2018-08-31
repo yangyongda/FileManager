@@ -11,41 +11,46 @@ import com.yyd.fjsd.filemanager.R;
 import com.yyd.fjsd.filemanager.bean.MyFile;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class FileUtil {
 
-    public static String getInterPath(){
-        if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
+    public static String getInterPath() {
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             return Environment.getExternalStorageDirectory().getAbsolutePath();
         }
         return null;
     }
 
-    public static List<File> getFileList(String path){
+    public static List<File> getFileList(String path) {
         List<File> list = new ArrayList<>();
         File file = new File(path);
         File[] allFile = file.listFiles();
-        for(int i = 0; i < allFile.length; i++){
+        for (int i = 0; i < allFile.length; i++) {
             list.add(allFile[i]);
         }
 
         return list;
     }
 
-    public static ArrayList<MyFile> FileToMyFile(List<File> files){
+    public static ArrayList<MyFile> FileToMyFile(List<File> files) {
         ArrayList<MyFile> myFiles = new ArrayList<>();
-        for(int i = 0; i < files.size(); i++){
+        for (int i = 0; i < files.size(); i++) {
             File file = files.get(i);
             String fileName = file.getName();
             String path = file.getAbsolutePath();
 
             MyFile myFile;
-            if(file.isDirectory()){
+            if (file.isDirectory()) {
                 myFile = new MyFile(R.drawable.folder, fileName, path, 0, 1);
-            }else {
+            } else {
                 long size = file.length();
                 myFile = new MyFile(R.drawable.files, fileName, path, size, 0);
             }
@@ -56,7 +61,7 @@ public class FileUtil {
         return myFiles;
     }
 
-    public static String sizeTransform(long size){
+    public static String sizeTransform(long size) {
         //如果字节数少于1024，则直接以B为单位，否则先除于1024，后3位因太少无意义
         if (size < 1024) {
             return String.valueOf(size) + "B";
@@ -96,6 +101,54 @@ public class FileUtil {
         } catch (ActivityNotFoundException e) {
             Toast.makeText(context, "sorry附件不能打开，请下载相关软件！", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    /*
+     * 拷贝成功返回true
+     * */
+    public static boolean copyFile(String fromFile, String toFile){
+        //要复制的文件目录
+        File[] currentFiles;
+        File root = new File(fromFile);
+        //如果不存在则 return出去
+        if (!root.exists()) {
+            return false;
+        }
+        //如果存在则获取当前目录下的全部文件 填充数组
+        currentFiles = root.listFiles();
+
+        //目标目录
+        File targetDir = new File(toFile);
+        //目录不存在则创建目录
+        if (!targetDir.exists()) {
+            targetDir.mkdirs();
+        }
+
+        //遍历要复制该目录下的全部文件
+        for (int i = 0; i < currentFiles.length; i++) {
+            if (currentFiles[i].isDirectory()) { //如果当前项为子目录 进行递归
+                copyFile(currentFiles[i].getPath() + "/", toFile + currentFiles[i].getName() + "/");
+
+            } else {//如果当前项为文件则进行文件拷贝
+                try {
+                    InputStream fisfrom = new FileInputStream(currentFiles[i].getPath());
+                    OutputStream fosto = new FileOutputStream(toFile + currentFiles[i].getName());
+                    byte data[] = new byte[1024];
+                    int num;
+                    while ((num = fisfrom.read(data)) > 0) {
+                        fosto.write(data, 0, num);
+                    }
+                    fosto.flush();
+                    fisfrom.close();
+                    fosto.close();
+                }catch (IOException e){
+                    //e.printStackTrace();
+                    return false;
+                }
+            }
+        }
+        return true;
+
     }
 }
 

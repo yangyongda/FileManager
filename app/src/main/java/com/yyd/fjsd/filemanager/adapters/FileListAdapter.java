@@ -31,12 +31,17 @@ import java.util.List;
 public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHolder> {
 
     private ArrayList<MyFile> mMyFils;
-    private HashMap<Integer, Integer> mSelectedList;
+    private HashMap<Integer, String> mSelectedList;
     private Context mContext;
+
     public FileListAdapter(ArrayList<MyFile> myFiles, Context context) {
         mMyFils = myFiles;
         mContext = context;
         mSelectedList = new HashMap<>();
+    }
+
+    public HashMap<Integer, String> getSelectedList() {
+        return mSelectedList;
     }
 
     @Override
@@ -53,18 +58,18 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
         holder.icon.setImageResource(myFile.getIcon());
         holder.fileNmae.setText(myFile.getFileName());
 
-        if(MyApplication.getInstance().runStatus == RunStatus.NORMAL_MODE) {
+        if (MyApplication.getInstance().runStatus == RunStatus.NORMAL_MODE) {
             mSelectedList.clear();
         }
 
-        //设置被选中的背景颜色，不加这段代码会出现其他位置的item被选中(背景为灰)
-        if(mSelectedList.containsKey(position)){
+        //设置被选中的背景颜色，不加这段代码会出现滑动时其他位置的item被选中(背景为灰)
+        if (mSelectedList.containsKey(position) && MyApplication.getInstance().runStatus == RunStatus.SELECT_MODE) {
             holder.cardView.setBackgroundColor(mContext.getResources().getColor(R.color.grep));
-        }else{
+        } else {
             holder.cardView.setBackgroundColor(mContext.getResources().getColor(R.color.white));
         }
 
-        if(myFile.getIsDirectory() == 0){
+        if (myFile.getIsDirectory() == 0) {
             //文件
             holder.size.setText(FileUtil.sizeTransform(myFile.getSize()));
             holder.size.setVisibility(View.VISIBLE);
@@ -72,46 +77,58 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
             holder.cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(MyApplication.getInstance().runStatus == RunStatus.NORMAL_MODE) {
-                        FileUtil.openFile(mContext, myFile.getPath());
-
-                    } else{
-                        if(mSelectedList.containsKey(position)) {
-                            view.setBackgroundColor(mContext.getResources().getColor(R.color.white));
-                            mSelectedList.remove(position);
-                        }else{
-                            view.setBackgroundColor(mContext.getResources().getColor(R.color.grep));
-                            mSelectedList.put(position, position);
-                        }
+                    switch (MyApplication.getInstance().runStatus) {
+                        case RunStatus.NORMAL_MODE:
+                            FileUtil.openFile(mContext, myFile.getPath());
+                            break;
+                        case RunStatus.SELECT_MODE:
+                            if (mSelectedList.containsKey(position)) {
+                                view.setBackgroundColor(mContext.getResources().getColor(R.color.white));
+                                mSelectedList.remove(position);
+                            } else {
+                                view.setBackgroundColor(mContext.getResources().getColor(R.color.grep));
+                                mSelectedList.put(position, myFile.getPath());
+                            }
+                            break;
+                        case RunStatus.COPY_MODE:
+                            break;
                     }
+
                 }
             });
-        }else {
+        } else {
             //文件夹
             holder.size.setVisibility(View.GONE);
             holder.next.setVisibility(View.VISIBLE);
             holder.cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(MyApplication.getInstance().runStatus == RunStatus.NORMAL_MODE) {
-                        MyApplication.getInstance().prePath.add(new File(myFile.getPath()).getParent()); //保存当前路径
-                        List<File> list = FileUtil.getFileList(myFile.getPath());
-                        ArrayList<MyFile> myFileList = FileUtil.FileToMyFile(list);
-                        //FileListFragment
-                        FileListFragment fileListFragment = FileListFragment.newInstance(myFileList);
-                        FragmentManager fragmentManager = ((AppCompatActivity) mContext).getSupportFragmentManager();
-                        FragmentTransaction transaction = fragmentManager.beginTransaction();
-                        transaction.replace(R.id.primary_content, fileListFragment);
-                        transaction.commit();
-                    }else {
-                        if(mSelectedList.containsKey(position)) {
-                            view.setBackgroundColor(mContext.getResources().getColor(R.color.white));
-                            mSelectedList.remove(position);
-                        }else {
-                            view.setBackgroundColor(mContext.getResources().getColor(R.color.grep));
-                            mSelectedList.put(position, position);
-                        }
+                    switch (MyApplication.getInstance().runStatus) {
+                        case RunStatus.NORMAL_MODE:
+                        case RunStatus.COPY_MODE:
+                            MyApplication.getInstance().prePath.add(new File(myFile.getPath()).getParent()); //保存父路径
+                            MyApplication.getInstance().currPath = myFile.getPath();    //保存当前路径
+                            List<File> list = FileUtil.getFileList(myFile.getPath());
+                            ArrayList<MyFile> myFileList = FileUtil.FileToMyFile(list);
+                            //FileListFragment
+                            FileListFragment fileListFragment = FileListFragment.newInstance(myFileList);
+                            FragmentManager fragmentManager = ((AppCompatActivity) mContext).getSupportFragmentManager();
+                            FragmentTransaction transaction = fragmentManager.beginTransaction();
+                            transaction.replace(R.id.primary_content, fileListFragment);
+                            transaction.commit();
+                            break;
+                        case RunStatus.SELECT_MODE:
+                            if (mSelectedList.containsKey(position)) {
+                                view.setBackgroundColor(mContext.getResources().getColor(R.color.white));
+                                mSelectedList.remove(position);
+                            } else {
+                                view.setBackgroundColor(mContext.getResources().getColor(R.color.grep));
+                                mSelectedList.put(position, myFile.getPath());
+                            }
+                            break;
+
                     }
+
                 }
             });
         }
@@ -119,11 +136,12 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
         holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                if(MyApplication.getInstance().runStatus == RunStatus.NORMAL_MODE){
+                if (MyApplication.getInstance().runStatus == RunStatus.NORMAL_MODE) {
                     MyApplication.getInstance().runStatus = RunStatus.SELECT_MODE;  //进入选择模式
                     view.setBackgroundColor(mContext.getResources().getColor(R.color.grep));
-                    mSelectedList.put(position, position); //添加到选择列表
-                    ((AppCompatActivity)mContext).startSupportActionMode(new ActionModeCallback(mContext, FileListAdapter.this));
+                    mSelectedList.put(position, myFile.getPath()); //添加到选择列表
+                    ((AppCompatActivity) mContext).startSupportActionMode(new ActionModeCallback(mContext, FileListAdapter.this));
+
                 }
                 return true;
             }
@@ -135,7 +153,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
         return mMyFils.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder{
+    class ViewHolder extends RecyclerView.ViewHolder {
         ImageView icon;
         TextView fileNmae;
         TextView size;
