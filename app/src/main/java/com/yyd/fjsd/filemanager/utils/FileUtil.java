@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.yyd.fjsd.filemanager.R;
@@ -106,16 +107,18 @@ public class FileUtil {
     /*
      * 拷贝成功返回true
      * */
-    public static boolean copyFile(String fromFile, String toFile){
+    public static boolean copy(String fromFile, String toFile){
+        Log.v("yang", "fromPath = " + fromFile + " ,toPath = " + toFile);
         //要复制的文件目录
-        File[] currentFiles;
+        File[] currentFiles = null;
         File root = new File(fromFile);
         //如果不存在则 return出去
         if (!root.exists()) {
             return false;
         }
-        //如果存在则获取当前目录下的全部文件 填充数组
-        currentFiles = root.listFiles();
+        if(root.isDirectory()){
+            currentFiles = root.listFiles();
+        }
 
         //目标目录
         File targetDir = new File(toFile);
@@ -125,30 +128,47 @@ public class FileUtil {
         }
 
         //遍历要复制该目录下的全部文件
-        for (int i = 0; i < currentFiles.length; i++) {
-            if (currentFiles[i].isDirectory()) { //如果当前项为子目录 进行递归
-                copyFile(currentFiles[i].getPath() + "/", toFile + currentFiles[i].getName() + "/");
+        if(currentFiles != null){
+            for (int i = 0; i < currentFiles.length; i++) {
+                if (currentFiles[i].isDirectory()) { //如果当前项为子目录 进行递归
+                    copy(currentFiles[i].getPath() + "/", toFile + File.separator + currentFiles[i].getName());
 
-            } else {//如果当前项为文件则进行文件拷贝
-                try {
-                    InputStream fisfrom = new FileInputStream(currentFiles[i].getPath());
-                    OutputStream fosto = new FileOutputStream(toFile + currentFiles[i].getName());
-                    byte data[] = new byte[1024];
-                    int num;
-                    while ((num = fisfrom.read(data)) > 0) {
-                        fosto.write(data, 0, num);
-                    }
-                    fosto.flush();
-                    fisfrom.close();
-                    fosto.close();
-                }catch (IOException e){
-                    //e.printStackTrace();
-                    return false;
+                } else {//如果当前项为文件则进行文件拷贝
+                   if(copyFile(currentFiles[i].getPath(), toFile + File.separator + currentFiles[i].getName())){
+                       return true;
+                   }else {
+                       return false;
+                   }
                 }
+            }
+        }else {
+            if(copyFile(fromFile, toFile + File.separator + new File(fromFile).getName())){
+                return true;
+            }else {
+                return false;
             }
         }
         return true;
+    }
 
+    private static boolean copyFile(String fromFile, String toFile){
+        //Log.v("yang", "fromPath = " + fromFile + "toPath = " + toFile);
+        try {
+            InputStream fisfrom = new FileInputStream(fromFile);
+            OutputStream fosto = new FileOutputStream(toFile);
+            byte data[] = new byte[1024];
+            int num;
+            while ((num = fisfrom.read(data)) > 0) {
+                fosto.write(data, 0, num);
+            }
+            fosto.flush();
+            fisfrom.close();
+            fosto.close();
+            return true;
+        }catch (IOException e){
+            //e.printStackTrace();
+            return false;
+        }
     }
 }
 

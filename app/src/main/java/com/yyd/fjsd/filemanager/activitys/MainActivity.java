@@ -14,10 +14,14 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 
 import com.yyd.fjsd.filemanager.MyApplication;
 import com.yyd.fjsd.filemanager.R;
+import com.yyd.fjsd.filemanager.asynctask.CopyFileTask;
 import com.yyd.fjsd.filemanager.bean.MyFile;
 import com.yyd.fjsd.filemanager.bean.Type;
 import com.yyd.fjsd.filemanager.fragment.FileListFragment;
@@ -27,6 +31,7 @@ import com.yyd.fjsd.filemanager.utils.RunStatus;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -35,6 +40,9 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
     private ActionBarDrawerToggle mToggle;
+    public LinearLayout mPaste_Layout;
+    private Button mPaste;
+    private Button mCancel;
     private ArrayList<Type> mTypes;
 
     @Override
@@ -69,7 +77,9 @@ public class MainActivity extends AppCompatActivity {
         mToolbar = findViewById(R.id.toolbar);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mNavigationView = findViewById(R.id.nav_view);
-
+        mPaste_Layout = findViewById(R.id.paste_layout);
+        mPaste = findViewById(R.id.paste);
+        mCancel = findViewById(R.id.cancel);
 
         //Toolbar
         setSupportActionBar(mToolbar);
@@ -97,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.nav_local:
+                        MyApplication.getInstance().currPath = FileUtil.getInterPath(); //保存当前路径
                         List<File> list = FileUtil.getFileList(FileUtil.getInterPath()); //获取root列表
                         ArrayList<MyFile> myFileList = FileUtil.FileToMyFile(list);
                         //FileListFragment
@@ -113,6 +124,34 @@ public class MainActivity extends AppCompatActivity {
                 }
                 mDrawerLayout.closeDrawers(); //关闭侧拉
                 return true;
+            }
+        });
+
+        //Paste Button
+        mPaste.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(MyApplication.getInstance().getSelectedList().size() > 0){
+                    Iterator<String> iterator =  MyApplication.getInstance().getSelectedList().values().iterator();
+                    Iterator<Integer> keyIterator =  MyApplication.getInstance().getSelectedList().keySet().iterator();
+                    //当前路径与拷贝的文件的路径不能一样，一样就等于没拷贝了
+                    if(!MyApplication.getInstance().getSelectedList().get(keyIterator.next()).equals(MyApplication.getInstance().currPath)){
+                        new CopyFileTask(MainActivity.this).execute(iterator);
+                    }else{
+                        Toast.makeText(MainActivity.this, "请选择其他路径，要黏贴的文件在当前目录下", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+
+            }
+        });
+
+        //Cancel Button
+        mCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MyApplication.getInstance().runStatus = RunStatus.NORMAL_MODE;
+                mPaste_Layout.setVisibility(View.INVISIBLE);
             }
         });
 

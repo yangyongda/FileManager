@@ -13,10 +13,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.yyd.fjsd.filemanager.MyApplication;
 import com.yyd.fjsd.filemanager.R;
+import com.yyd.fjsd.filemanager.activitys.MainActivity;
 import com.yyd.fjsd.filemanager.bean.MyFile;
 import com.yyd.fjsd.filemanager.fragment.FileListFragment;
 import com.yyd.fjsd.filemanager.utils.ActionModeCallback;
@@ -31,18 +33,14 @@ import java.util.List;
 public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHolder> {
 
     private ArrayList<MyFile> mMyFils;
-    private HashMap<Integer, String> mSelectedList;
     private Context mContext;
+
 
     public FileListAdapter(ArrayList<MyFile> myFiles, Context context) {
         mMyFils = myFiles;
         mContext = context;
-        mSelectedList = new HashMap<>();
     }
 
-    public HashMap<Integer, String> getSelectedList() {
-        return mSelectedList;
-    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -59,11 +57,11 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
         holder.fileNmae.setText(myFile.getFileName());
 
         if (MyApplication.getInstance().runStatus == RunStatus.NORMAL_MODE) {
-            mSelectedList.clear();
+            MyApplication.getInstance().getSelectedList().clear();
         }
 
         //设置被选中的背景颜色，不加这段代码会出现滑动时其他位置的item被选中(背景为灰)
-        if (mSelectedList.containsKey(position) && MyApplication.getInstance().runStatus == RunStatus.SELECT_MODE) {
+        if (MyApplication.getInstance().getSelectedList().containsKey(position) && MyApplication.getInstance().runStatus == RunStatus.SELECT_MODE) {
             holder.cardView.setBackgroundColor(mContext.getResources().getColor(R.color.grep));
         } else {
             holder.cardView.setBackgroundColor(mContext.getResources().getColor(R.color.white));
@@ -82,12 +80,12 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
                             FileUtil.openFile(mContext, myFile.getPath());
                             break;
                         case RunStatus.SELECT_MODE:
-                            if (mSelectedList.containsKey(position)) {
+                            if (MyApplication.getInstance().getSelectedList().containsKey(position)) {
                                 view.setBackgroundColor(mContext.getResources().getColor(R.color.white));
-                                mSelectedList.remove(position);
+                                MyApplication.getInstance().getSelectedList().remove(position);
                             } else {
                                 view.setBackgroundColor(mContext.getResources().getColor(R.color.grep));
-                                mSelectedList.put(position, myFile.getPath());
+                                MyApplication.getInstance().getSelectedList().put(position, myFile.getPath());
                             }
                             break;
                         case RunStatus.COPY_MODE:
@@ -118,12 +116,12 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
                             transaction.commit();
                             break;
                         case RunStatus.SELECT_MODE:
-                            if (mSelectedList.containsKey(position)) {
+                            if (MyApplication.getInstance().getSelectedList().containsKey(position)) {
                                 view.setBackgroundColor(mContext.getResources().getColor(R.color.white));
-                                mSelectedList.remove(position);
+                                MyApplication.getInstance().getSelectedList().remove(position);
                             } else {
                                 view.setBackgroundColor(mContext.getResources().getColor(R.color.grep));
-                                mSelectedList.put(position, myFile.getPath());
+                                MyApplication.getInstance().getSelectedList().put(position, myFile.getPath());
                             }
                             break;
 
@@ -139,13 +137,19 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
                 if (MyApplication.getInstance().runStatus == RunStatus.NORMAL_MODE) {
                     MyApplication.getInstance().runStatus = RunStatus.SELECT_MODE;  //进入选择模式
                     view.setBackgroundColor(mContext.getResources().getColor(R.color.grep));
-                    mSelectedList.put(position, myFile.getPath()); //添加到选择列表
+                    MyApplication.getInstance().getSelectedList().put(position, myFile.getPath()); //添加到选择列表
                     ((AppCompatActivity) mContext).startSupportActionMode(new ActionModeCallback(mContext, FileListAdapter.this));
 
                 }
                 return true;
             }
         });
+        //Log.v("yang", MyApplication.getInstance().runStatus + " ");
+        if (MyApplication.getInstance().runStatus == RunStatus.COPY_MODE) {
+            ((MainActivity)mContext).mPaste_Layout.setVisibility(View.VISIBLE);
+        } else {
+            ((MainActivity)mContext).mPaste_Layout.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override

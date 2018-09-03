@@ -41,8 +41,9 @@ public class ActionModeCallback implements ActionMode.Callback {
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         switch (item.getItemId()){
             case R.id.copy:
+                mode.finish();  //关闭ActionMode
                 MyApplication.getInstance().runStatus = RunStatus.COPY_MODE;
-                mAdapter.notifyDataSetChanged();
+                mAdapter.notifyDataSetChanged(); //刷新界面
                 break;
             case R.id.cut:
                 break;
