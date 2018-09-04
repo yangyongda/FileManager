@@ -5,7 +5,6 @@ import android.os.AsyncTask;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.yyd.fjsd.filemanager.MyApplication;
@@ -20,26 +19,31 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class CopyFileTask extends AsyncTask<Iterator<String>, Integer, Boolean> {
+public class DeleteFileTask extends AsyncTask<Iterator<String>, Integer, Boolean> {
 
     private Context mContext;
 
-    public CopyFileTask(Context mContext) {
+    public DeleteFileTask(Context mContext) {
         this.mContext = mContext;
     }
 
     @Override
     protected Boolean doInBackground(Iterator<String>... iterators) {
-        String toPath = MyApplication.getInstance().currPath;   //复制的目标路径
-        Iterator<String> iterator = iterators[0];   //复制的文件列表
-        boolean success = false; //拷贝的状态
+
+        Iterator<String> iterator = iterators[0];   //删除的文件列表
+        ArrayList<String> fileNames = new ArrayList<>();
+        boolean success = false; //删除的状态
+        /*
+        *遍历保存到ArrayList中，不能直接使用迭代器进行删除，会导致 java.util.ConcurrentModificationException
+        * 因为迭代器不允许在使用过程中修改集合，而删除文件就是在修改集合内容。
+        * */
         while (iterator.hasNext()){
-            String fromPath = iterator.next();
-            //Log.v("yang", "fromPath = " + fromPath + "toPath = " + toPath);
-            if(new File(fromPath).isDirectory()){
-                toPath = toPath + File.separator + new File(fromPath).getName();
-            }
-            if(FileUtil.copy(fromPath, toPath )){
+            String filePath = iterator.next();
+            fileNames.add(filePath);
+        }
+
+        for(int i = 0; i < fileNames.size(); i++){
+            if(FileUtil.deleteFiles(fileNames.get(i))){
                 success = true;
             }else{
                 success = false;
@@ -57,9 +61,9 @@ public class CopyFileTask extends AsyncTask<Iterator<String>, Integer, Boolean> 
     @Override
     protected void onPostExecute(Boolean success) {
         if(success){
-            Toast.makeText(mContext, "拷贝成功", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "删除成功", Toast.LENGTH_SHORT).show();
         }else{
-            Toast.makeText(mContext, "拷贝失败", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "删除失败", Toast.LENGTH_SHORT).show();
         }
         MyApplication.getInstance().runStatus = RunStatus.NORMAL_MODE;
         //清空选择列表

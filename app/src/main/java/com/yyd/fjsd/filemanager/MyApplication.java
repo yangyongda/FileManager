@@ -15,6 +15,7 @@ public class MyApplication extends Application {
     private static MyApplication instance;
     private SharedPreferencesHelper mSharedPreferencesHelper;
     public List<String> prePath;  //保存父路径
+    public List<Integer> prePosition; //保存父路径位置，返回时回到对应位置
     public String currPath;       //保存当前路径
     public int runStatus;   //运行状态
     private HashMap<Integer, String> mSelectedList; //被选中的item
@@ -29,6 +30,7 @@ public class MyApplication extends Application {
         instance = this;
         mSharedPreferencesHelper = SharedPreferencesHelper.getInstance(instance);
         prePath = new ArrayList<>();
+        prePosition = new ArrayList<>();
         runStatus = RunStatus.NORMAL_MODE;
         mSelectedList = new HashMap<>();
     }

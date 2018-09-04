@@ -88,8 +88,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
                                 MyApplication.getInstance().getSelectedList().put(position, myFile.getPath());
                             }
                             break;
-                        case RunStatus.COPY_MODE:
-                            break;
+
                     }
 
                 }
@@ -104,12 +103,14 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
                     switch (MyApplication.getInstance().runStatus) {
                         case RunStatus.NORMAL_MODE:
                         case RunStatus.COPY_MODE:
+                        case RunStatus.CUT_MODE:
                             MyApplication.getInstance().prePath.add(new File(myFile.getPath()).getParent()); //保存父路径
+                            MyApplication.getInstance().prePosition.add(position);
                             MyApplication.getInstance().currPath = myFile.getPath();    //保存当前路径
                             List<File> list = FileUtil.getFileList(myFile.getPath());
                             ArrayList<MyFile> myFileList = FileUtil.FileToMyFile(list);
                             //FileListFragment
-                            FileListFragment fileListFragment = FileListFragment.newInstance(myFileList);
+                            FileListFragment fileListFragment = FileListFragment.newInstance(myFileList, 0);
                             FragmentManager fragmentManager = ((AppCompatActivity) mContext).getSupportFragmentManager();
                             FragmentTransaction transaction = fragmentManager.beginTransaction();
                             transaction.replace(R.id.primary_content, fileListFragment);
@@ -145,7 +146,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
             }
         });
         //Log.v("yang", MyApplication.getInstance().runStatus + " ");
-        if (MyApplication.getInstance().runStatus == RunStatus.COPY_MODE) {
+        if (MyApplication.getInstance().runStatus == RunStatus.COPY_MODE || MyApplication.getInstance().runStatus == RunStatus.CUT_MODE) {
             ((MainActivity)mContext).mPaste_Layout.setVisibility(View.VISIBLE);
         } else {
             ((MainActivity)mContext).mPaste_Layout.setVisibility(View.INVISIBLE);

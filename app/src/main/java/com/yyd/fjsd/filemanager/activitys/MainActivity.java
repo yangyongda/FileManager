@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
                         List<File> list = FileUtil.getFileList(FileUtil.getInterPath()); //获取root列表
                         ArrayList<MyFile> myFileList = FileUtil.FileToMyFile(list);
                         //FileListFragment
-                        FileListFragment fileListFragment = FileListFragment.newInstance(myFileList);
+                        FileListFragment fileListFragment = FileListFragment.newInstance(myFileList, 0);
                         FragmentManager fragmentManager = getSupportFragmentManager();
                         FragmentTransaction transaction = fragmentManager.beginTransaction();
                         transaction.replace(R.id.primary_content, fileListFragment);
@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
                     Iterator<String> iterator =  MyApplication.getInstance().getSelectedList().values().iterator();
                     Iterator<Integer> keyIterator =  MyApplication.getInstance().getSelectedList().keySet().iterator();
                     //当前路径与拷贝的文件的路径不能一样，一样就等于没拷贝了
-                    if(!MyApplication.getInstance().getSelectedList().get(keyIterator.next()).equals(MyApplication.getInstance().currPath)){
+                    if(!new File(MyApplication.getInstance().getSelectedList().get(keyIterator.next())).getParent().equals(MyApplication.getInstance().currPath)){
                         new CopyFileTask(MainActivity.this).execute(iterator);
                     }else{
                         Toast.makeText(MainActivity.this, "请选择其他路径，要黏贴的文件在当前目录下", Toast.LENGTH_SHORT).show();
@@ -168,16 +168,22 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if(MyApplication.getInstance().prePath.size() > 0
-                && (MyApplication.getInstance().runStatus == RunStatus.NORMAL_MODE || MyApplication.getInstance().runStatus == RunStatus.COPY_MODE)){
+                && (MyApplication.getInstance().runStatus == RunStatus.NORMAL_MODE
+                || MyApplication.getInstance().runStatus == RunStatus.COPY_MODE
+                || MyApplication.getInstance().runStatus == RunStatus.CUT_MODE)){
             //获取最近的路径
             int size = MyApplication.getInstance().prePath.size();
             String lastPath = MyApplication.getInstance().prePath.get(size - 1);
             MyApplication.getInstance().prePath.remove(size - 1);
 
+            //获取最近路径的位置
+            int position = MyApplication.getInstance().prePosition.get(size - 1);
+            MyApplication.getInstance().prePosition.remove(size - 1);
+
             List<File> list = FileUtil.getFileList(lastPath);
             ArrayList<MyFile> myFileList = FileUtil.FileToMyFile(list);
             //FileListFragment
-            FileListFragment fileListFragment = FileListFragment.newInstance(myFileList);
+            FileListFragment fileListFragment = FileListFragment.newInstance(myFileList, position);
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction transaction = fragmentManager.beginTransaction();
             transaction.replace(R.id.primary_content, fileListFragment);

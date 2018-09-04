@@ -33,10 +33,12 @@ import java.util.Iterator;
 public class FileListFragment extends Fragment {
 
     private static final String FILE_LIST = "file_list";
+    private static final String POSITION = "position";
 
     private RecyclerView mRecyclerView;
     private FileListAdapter adapter;
     private ArrayList<MyFile> mFilelist;
+    private int position;
 
     public FileListFragment() {
         // Required empty public constructor
@@ -49,10 +51,11 @@ public class FileListFragment extends Fragment {
      * @param files Parameter 1.
      * @return A new instance of fragment FileListFragment.
      */
-    public static FileListFragment newInstance(ArrayList<MyFile> files) {
+    public static FileListFragment newInstance(ArrayList<MyFile> files, int position) {
         FileListFragment fragment = new FileListFragment();
         Bundle args = new Bundle();
         args.putParcelableArrayList(FILE_LIST, files);
+        args.putInt(POSITION, position);
         fragment.setArguments(args);
         return fragment;
     }
@@ -62,6 +65,7 @@ public class FileListFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mFilelist = getArguments().getParcelableArrayList(FILE_LIST);
+            position = getArguments().getInt(POSITION);
         }
     }
 
@@ -76,7 +80,7 @@ public class FileListFragment extends Fragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext(), LinearLayoutManager.VERTICAL, false));
         adapter = new FileListAdapter(mFilelist, this.getContext());
         mRecyclerView.setAdapter(adapter);
-
+        mRecyclerView.scrollToPosition(position);
         return view;
     }
 

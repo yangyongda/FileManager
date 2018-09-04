@@ -108,7 +108,7 @@ public class FileUtil {
      * 拷贝成功返回true
      * */
     public static boolean copy(String fromFile, String toFile){
-        Log.v("yang", "fromPath = " + fromFile + " ,toPath = " + toFile);
+        //Log.v("yang", "fromPath = " + fromFile + " ,toPath = " + toFile);
         //要复制的文件目录
         File[] currentFiles = null;
         File root = new File(fromFile);
@@ -130,21 +130,19 @@ public class FileUtil {
         //遍历要复制该目录下的全部文件
         if(currentFiles != null){
             for (int i = 0; i < currentFiles.length; i++) {
+                //Log.v("yang", "length = " + currentFiles.length + "FileName = " + currentFiles[i].getName() + "i = " + i);
                 if (currentFiles[i].isDirectory()) { //如果当前项为子目录 进行递归
                     copy(currentFiles[i].getPath() + "/", toFile + File.separator + currentFiles[i].getName());
 
                 } else {//如果当前项为文件则进行文件拷贝
-                   if(copyFile(currentFiles[i].getPath(), toFile + File.separator + currentFiles[i].getName())){
-                       return true;
-                   }else {
-                       return false;
-                   }
+                    if(!copyFile(currentFiles[i].getPath(), toFile + File.separator + currentFiles[i].getName())){
+                        return false;
+                    }
+
                 }
             }
         }else {
-            if(copyFile(fromFile, toFile + File.separator + new File(fromFile).getName())){
-                return true;
-            }else {
+            if(!copyFile(fromFile, toFile + File.separator + new File(fromFile).getName())){
                 return false;
             }
         }
@@ -167,6 +165,31 @@ public class FileUtil {
             return true;
         }catch (IOException e){
             //e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean deleteFiles(String file){
+        File deleteFile = new File(file);
+
+        //如果不存在则 return出去
+        if (!deleteFile.exists()) {
+            return false;
+        }
+
+        if(deleteFile.isDirectory()){
+            String[] children = deleteFile.list();
+            //递归删除
+            for (int i=0; i<children.length; i++) {
+                boolean success = deleteFiles(file + File.separator + children[i]);
+                if (!success) {
+                    return false;
+                }
+            }
+        }
+        if(deleteFile.delete()){
+            return true;
+        }else{
             return false;
         }
     }

@@ -12,6 +12,7 @@ import com.yyd.fjsd.filemanager.MyApplication;
 import com.yyd.fjsd.filemanager.R;
 import com.yyd.fjsd.filemanager.adapters.FileListAdapter;
 import com.yyd.fjsd.filemanager.asynctask.CopyFileTask;
+import com.yyd.fjsd.filemanager.asynctask.DeleteFileTask;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -46,8 +47,13 @@ public class ActionModeCallback implements ActionMode.Callback {
                 mAdapter.notifyDataSetChanged(); //刷新界面
                 break;
             case R.id.cut:
+                mode.finish();
+                MyApplication.getInstance().runStatus = RunStatus.CUT_MODE;
+                mAdapter.notifyDataSetChanged(); //刷新界面
                 break;
             case R.id.delete:
+                mode.finish();  //关闭ActionMode
+                new DeleteFileTask(mContext).execute(MyApplication.getInstance().getSelectedList().values().iterator());
                 break;
         }
         return false;
