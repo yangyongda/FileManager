@@ -57,22 +57,44 @@ public class CopyFileTask extends AsyncTask<Iterator<String>, Integer, Boolean> 
     @Override
     protected void onPostExecute(Boolean success) {
         if(success){
-            Toast.makeText(mContext, "拷贝成功", Toast.LENGTH_SHORT).show();
+            if(MyApplication.getInstance().runStatus == RunStatus.CUT_MODE){
+                //剪切模式要删除掉文件
+                new DeleteFileTask(mContext).execute(MyApplication.getInstance().getSelectedList().values().iterator());
+            }else{
+                Toast.makeText(mContext, "拷贝成功", Toast.LENGTH_SHORT).show();
+                MyApplication.getInstance().runStatus = RunStatus.NORMAL_MODE;
+                //清空选择列表
+                MyApplication.getInstance().getSelectedList().clear();
+                //刷新列表
+                List<File> list = FileUtil.getFileList(MyApplication.getInstance().currPath);
+                ArrayList<MyFile> myFileList = FileUtil.FileToMyFile(list);
+                //FileListFragment
+                FileListFragment fileListFragment = FileListFragment.newInstance(myFileList, 0);
+                FragmentManager fragmentManager = ((AppCompatActivity)mContext).getSupportFragmentManager();
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.replace(R.id.primary_content, fileListFragment);
+                transaction.commit();
+            }
         }else{
-            Toast.makeText(mContext, "拷贝失败", Toast.LENGTH_SHORT).show();
+            if(MyApplication.getInstance().runStatus == RunStatus.CUT_MODE) {
+                Toast.makeText(mContext, "剪切失败", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(mContext, "拷贝失败", Toast.LENGTH_SHORT).show();
+            }
+            MyApplication.getInstance().runStatus = RunStatus.NORMAL_MODE;
+            //清空选择列表
+            MyApplication.getInstance().getSelectedList().clear();
+            //刷新列表
+            List<File> list = FileUtil.getFileList(MyApplication.getInstance().currPath);
+            ArrayList<MyFile> myFileList = FileUtil.FileToMyFile(list);
+            //FileListFragment
+            FileListFragment fileListFragment = FileListFragment.newInstance(myFileList, 0);
+            FragmentManager fragmentManager = ((AppCompatActivity)mContext).getSupportFragmentManager();
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.replace(R.id.primary_content, fileListFragment);
+            transaction.commit();
         }
-        MyApplication.getInstance().runStatus = RunStatus.NORMAL_MODE;
-        //清空选择列表
-        MyApplication.getInstance().getSelectedList().clear();
-        //刷新列表
-        List<File> list = FileUtil.getFileList(MyApplication.getInstance().currPath);
-        ArrayList<MyFile> myFileList = FileUtil.FileToMyFile(list);
-        //FileListFragment
-        FileListFragment fileListFragment = FileListFragment.newInstance(myFileList, 0);
-        FragmentManager fragmentManager = ((AppCompatActivity)mContext).getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.primary_content, fileListFragment);
-        transaction.commit();
+
     }
 
     @Override

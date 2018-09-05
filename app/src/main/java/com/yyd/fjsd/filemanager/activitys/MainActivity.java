@@ -1,6 +1,8 @@
 package com.yyd.fjsd.filemanager.activitys;
 
 
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
@@ -22,6 +24,7 @@ import android.widget.Toast;
 import com.yyd.fjsd.filemanager.MyApplication;
 import com.yyd.fjsd.filemanager.R;
 import com.yyd.fjsd.filemanager.asynctask.CopyFileTask;
+import com.yyd.fjsd.filemanager.asynctask.LoadFileListTask;
 import com.yyd.fjsd.filemanager.bean.MyFile;
 import com.yyd.fjsd.filemanager.bean.Type;
 import com.yyd.fjsd.filemanager.fragment.FileListFragment;
@@ -45,6 +48,22 @@ public class MainActivity extends AppCompatActivity {
     private Button mCancel;
     private ArrayList<Type> mTypes;
 
+    private Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            switch(msg.what){
+                case 0x123:
+                    ArrayList<MyFile> myFileList = (ArrayList<MyFile>)msg.obj;
+                    //FileListFragment
+                    FileListFragment fileListFragment = FileListFragment.newInstance(myFileList, 0);
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    FragmentTransaction transaction = fragmentManager.beginTransaction();
+                    transaction.replace(R.id.primary_content, fileListFragment);
+                    transaction.commit();
+                    break;
+            }
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,6 +127,8 @@ public class MainActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.nav_local:
                         MyApplication.getInstance().currPath = FileUtil.getInterPath(); //保存当前路径
+                        new LoadFileListTask(MainActivity.this, mHandler).execute(FileUtil.getInterPath());
+                        /*
                         List<File> list = FileUtil.getFileList(FileUtil.getInterPath()); //获取root列表
                         ArrayList<MyFile> myFileList = FileUtil.FileToMyFile(list);
                         //FileListFragment
@@ -116,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
                         FragmentTransaction transaction = fragmentManager.beginTransaction();
                         transaction.replace(R.id.primary_content, fileListFragment);
                         transaction.commit();
+                        */
                         break;
                     case R.id.nav_setting:
                         break;
@@ -175,10 +197,12 @@ public class MainActivity extends AppCompatActivity {
             int size = MyApplication.getInstance().prePath.size();
             String lastPath = MyApplication.getInstance().prePath.get(size - 1);
             MyApplication.getInstance().prePath.remove(size - 1);
+            MyApplication.getInstance().currPath = lastPath;    //保存当前路径
 
             //获取最近路径的位置
             int position = MyApplication.getInstance().prePosition.get(size - 1);
             MyApplication.getInstance().prePosition.remove(size - 1);
+
 
             List<File> list = FileUtil.getFileList(lastPath);
             ArrayList<MyFile> myFileList = FileUtil.FileToMyFile(list);

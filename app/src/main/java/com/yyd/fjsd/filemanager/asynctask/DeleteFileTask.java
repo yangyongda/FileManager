@@ -61,9 +61,17 @@ public class DeleteFileTask extends AsyncTask<Iterator<String>, Integer, Boolean
     @Override
     protected void onPostExecute(Boolean success) {
         if(success){
-            Toast.makeText(mContext, "删除成功", Toast.LENGTH_SHORT).show();
+            if(MyApplication.getInstance().runStatus == RunStatus.CUT_MODE){
+                Toast.makeText(mContext, "剪切成功", Toast.LENGTH_SHORT).show();
+            }else {
+                Toast.makeText(mContext, "删除成功", Toast.LENGTH_SHORT).show();
+            }
         }else{
-            Toast.makeText(mContext, "删除失败", Toast.LENGTH_SHORT).show();
+            if(MyApplication.getInstance().runStatus == RunStatus.CUT_MODE){
+                Toast.makeText(mContext, "剪切失败", Toast.LENGTH_SHORT).show();
+            }else {
+                Toast.makeText(mContext, "删除失败", Toast.LENGTH_SHORT).show();
+            }
         }
         MyApplication.getInstance().runStatus = RunStatus.NORMAL_MODE;
         //清空选择列表
