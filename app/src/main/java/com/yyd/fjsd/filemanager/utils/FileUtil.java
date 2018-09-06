@@ -8,6 +8,7 @@ import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.yyd.fjsd.filemanager.MyApplication;
 import com.yyd.fjsd.filemanager.R;
 import com.yyd.fjsd.filemanager.bean.MyFile;
 
@@ -192,6 +193,22 @@ public class FileUtil {
         }else{
             return false;
         }
+    }
+
+    public static boolean renameFile(String oldName, String newName){
+        File oldFile = new File(oldName);
+        File newFile = new File(newName);
+        //检查是否当前目录下有相同名字的文件
+        List<File> checkFiles = getFileList(MyApplication.getInstance().currPath);
+        for(int i = 0; i < checkFiles.size(); i++){
+            if(checkFiles.get(i).getName().equals(newName)){
+                return false;
+            }
+        }
+        if(!oldFile.renameTo(newFile)){
+            return false;
+        }
+        return true;
     }
 }
 

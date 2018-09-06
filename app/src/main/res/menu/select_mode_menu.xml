@@ -4,4 +4,5 @@
     <item android:id="@+id/copy" android:icon="@drawable/copy" android:title="拷贝" app:showAsAction="always"/>
     <item android:id="@+id/cut" android:icon="@drawable/cut" android:title="剪切" app:showAsAction="always"/>
     <item android:id="@+id/delete" android:icon="@drawable/delete" android:title="删除" app:showAsAction="always"/>
+    <item android:id="@+id/rename" android:icon="@drawable/rename" android:title="重命名" app:showAsAction="collapseActionView"/>
 </menu>
