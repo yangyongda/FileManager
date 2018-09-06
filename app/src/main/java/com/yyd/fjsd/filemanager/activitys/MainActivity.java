@@ -1,6 +1,8 @@
 package com.yyd.fjsd.filemanager.activitys;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
@@ -14,9 +16,11 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -186,6 +190,64 @@ public class MainActivity extends AppCompatActivity {
         transaction.commit();
 
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.new_folder:
+                View view = getLayoutInflater().inflate(R.layout.rename_layout, null);
+                final EditText newFolder = view.findViewById(R.id.rename);
+                new AlertDialog.Builder(this)
+                        .setTitle(R.string.new_folder)
+                        .setView(view)
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                String name = newFolder.getText().toString();
+                                if(name != null && !name.equals("")){
+                                    String folderName = MyApplication.getInstance().currPath + File.separator + name;
+                                    if(FileUtil.newFolder(folderName)){
+                                        MyApplication.getInstance().runStatus = RunStatus.NORMAL_MODE;
+                                        //清空选择列表
+                                        MyApplication.getInstance().getSelectedList().clear();
+                                        //刷新列表
+                                        List<File> list = FileUtil.getFileList(MyApplication.getInstance().currPath);
+                                        ArrayList<MyFile> myFileList = FileUtil.FileToMyFile(list);
+                                        //FileListFragment
+                                        FileListFragment fileListFragment = FileListFragment.newInstance(myFileList, 0);
+                                        FragmentManager fragmentManager = getSupportFragmentManager();
+                                        FragmentTransaction transaction = fragmentManager.beginTransaction();
+                                        transaction.replace(R.id.primary_content, fileListFragment);
+                                        transaction.commit();
+                                    }else {
+                                        Toast.makeText(MainActivity.this, "新建文件夹失败！", Toast.LENGTH_SHORT).show();
+                                    }
+                                }else{
+                                    Toast.makeText(MainActivity.this, "请输入文件夹名称", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        })
+                        .create()
+                        .show();
+                break;
+            case R.id.setting:
+                break;
+
+        }
+        return true;
     }
 
     @Override

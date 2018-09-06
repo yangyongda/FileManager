@@ -210,5 +210,21 @@ public class FileUtil {
         }
         return true;
     }
+
+    public static boolean newFolder(String name){
+        File folder = new File(name);
+        //检查是否当前目录下有相同名字的文件
+        List<File> checkFiles = getFileList(MyApplication.getInstance().currPath);
+        for(int i = 0; i < checkFiles.size(); i++){
+            if(checkFiles.get(i).getName().equals(name)){
+                return false;
+            }
+        }
+        if(!folder.mkdir()){
+            return false;
+        }
+        return true;
+
+    }
 }
 
