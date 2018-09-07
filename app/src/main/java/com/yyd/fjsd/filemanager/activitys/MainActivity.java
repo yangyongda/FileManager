@@ -3,6 +3,7 @@ package com.yyd.fjsd.filemanager.activitys;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
@@ -34,6 +35,7 @@ import com.yyd.fjsd.filemanager.bean.Type;
 import com.yyd.fjsd.filemanager.fragment.FileListFragment;
 import com.yyd.fjsd.filemanager.fragment.MainFragment;
 import com.yyd.fjsd.filemanager.utils.FileUtil;
+import com.yyd.fjsd.filemanager.utils.FragmentList;
 import com.yyd.fjsd.filemanager.utils.RunStatus;
 
 import java.io.File;
@@ -130,7 +132,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
+                    case R.id.home:
+                        MainFragment fragment = MainFragment.newInstance(mTypes);
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+                        FragmentTransaction transaction = fragmentManager.beginTransaction();
+                        transaction.replace(R.id.primary_content, fragment);
+                        transaction.commit();
+                        break;
                     case R.id.nav_local:
+                        MyApplication.getInstance().fragment_page = FragmentList.FILELIST_FRAGMENT;
+                        invalidateOptionsMenu(); //刷新OptionsMenu
                         MyApplication.getInstance().currPath = FileUtil.getInterPath(); //保存当前路径
                         new LoadFileListTask(MainActivity.this, mHandler).execute(FileUtil.getInterPath());
                         /*
@@ -145,9 +156,10 @@ public class MainActivity extends AppCompatActivity {
                         */
                         break;
                     case R.id.nav_setting:
+                        Intent setting = new Intent(MainActivity.this, SettingActivity.class);
+                        startActivity(setting);
                         break;
-                    case R.id.nav_about:
-                        break;
+
                 }
                 mDrawerLayout.closeDrawers(); //关闭侧拉
                 return true;
@@ -195,6 +207,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
+        if(MyApplication.getInstance().fragment_page == FragmentList.FILELIST_FRAGMENT){
+            menu.getItem(0).setVisible(true);
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -244,6 +259,8 @@ public class MainActivity extends AppCompatActivity {
                         .show();
                 break;
             case R.id.setting:
+                Intent setting = new Intent(MainActivity.this, SettingActivity.class);
+                startActivity(setting);
                 break;
 
         }
