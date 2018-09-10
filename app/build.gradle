@@ -16,6 +16,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets {
+        main {
+            res.srcDirs = ['src/main/res', 'src/main/res-night','src/main/res-light']
+        }
+    }
 }
 
 dependencies {
@@ -31,4 +36,9 @@ dependencies {
     implementation 'com.android.support:cardview-v7:26.1.0'
     implementation 'com.android.support:recyclerview-v7:26.1.0'
     implementation 'com.github.apl-devs:appintro:v4.2.3' //引导页
+    //换肤
+    implementation 'skin.support:skin-support:3.1.0-beta1'                   // skin-support 基础控件支持
+    implementation 'skin.support:skin-support-design:3.1.0-beta1'            // skin-support-design material design 控件支持[可选]
+    implementation 'skin.support:skin-support-cardview:3.1.0-beta1'          // skin-support-cardview CardView 控件支持[可选]
+    implementation 'skin.support:skin-support-constraint-layout:3.1.0-beta1' // skin-support-constraint-layout ConstraintLayout 控件支持[可选]
 }

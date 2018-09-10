@@ -7,6 +7,8 @@ public class SharedPreferencesHelper {
 
     private static final String FILE_NAME = "user_settings";
     private final String  FIRST_START = "firstStart";
+    private final String  THEME_NO = "theme_no";
+
     private static SharedPreferencesHelper mSharedPreferencesHelper;
     private SharedPreferences mSharedPreferences;
 
@@ -33,5 +35,15 @@ public class SharedPreferencesHelper {
         }else{
             return false;
         }
+    }
+
+    public void setThemeNo(int theme){
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putInt(THEME_NO, theme);
+        editor.commit();
+    }
+
+    public int getThemeNo(){
+        return mSharedPreferences.getInt(THEME_NO, 0);
     }
 }
