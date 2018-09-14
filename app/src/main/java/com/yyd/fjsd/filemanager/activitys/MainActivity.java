@@ -133,6 +133,8 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.home:
+                        MyApplication.getInstance().fragment_page = FragmentList.MAIN_FRAGMENT;
+                        invalidateOptionsMenu(); //刷新OptionsMenu
                         MainFragment fragment = MainFragment.newInstance(mTypes);
                         FragmentManager fragmentManager = getSupportFragmentManager();
                         FragmentTransaction transaction = fragmentManager.beginTransaction();

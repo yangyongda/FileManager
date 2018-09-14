@@ -2,7 +2,9 @@ package com.yyd.fjsd.filemanager.fragment;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +18,7 @@ import android.widget.Toast;
 
 import com.yyd.fjsd.filemanager.MyApplication;
 import com.yyd.fjsd.filemanager.R;
+import com.yyd.fjsd.filemanager.activitys.SettingActivity;
 import com.yyd.fjsd.filemanager.adapters.FileListAdapter;
 import com.yyd.fjsd.filemanager.asynctask.CopyFileTask;
 import com.yyd.fjsd.filemanager.bean.MyFile;
@@ -36,6 +39,7 @@ public class FileListFragment extends Fragment {
     private static final String POSITION = "position";
 
     private RecyclerView mRecyclerView;
+    private FloatingActionButton mFloatingActionButton;
     private FileListAdapter adapter;
     private ArrayList<MyFile> mFilelist;
     private int position;
@@ -75,12 +79,23 @@ public class FileListFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_file_list, container, false);
         mRecyclerView = view.findViewById(R.id.fileList);
+        mFloatingActionButton = view.findViewById(R.id.fab_setting);
 
         //recyclerView
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext(), LinearLayoutManager.VERTICAL, false));
         adapter = new FileListAdapter(mFilelist, this.getContext());
         mRecyclerView.setAdapter(adapter);
         mRecyclerView.scrollToPosition(position);
+
+        //FloatingActionButton
+        mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent setting  = new Intent(FileListFragment.this.getContext(), SettingActivity.class);
+                FileListFragment.this.getContext().startActivity(setting);
+            }
+        });
+
         return view;
     }
 

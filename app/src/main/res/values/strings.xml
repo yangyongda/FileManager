@@ -13,4 +13,5 @@
     <string name="storage_space">存储空间</string>
     <string name="setting">设置</string>
     <string name="about">关于</string>
+    <string name="modify_lock">修改图形锁</string>
 </resources>

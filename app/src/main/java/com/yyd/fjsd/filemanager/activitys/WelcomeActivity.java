@@ -10,12 +10,17 @@ import com.github.paolorotolo.appintro.AppIntroFragment;
 import com.github.paolorotolo.appintro.model.SliderPage;
 import com.yyd.fjsd.filemanager.MyApplication;
 import com.yyd.fjsd.filemanager.R;
+import com.yyd.fjsd.filemanager.db.DBUtils;
 
 public class WelcomeActivity extends AppIntro2 {
 
+    private DBUtils mDBUtils;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mDBUtils = new DBUtils(this);
+
         if(MyApplication.getInstance().getSharedPreferencesHelper().getFirstStart()) {
             SliderPage sliderPageOne = new SliderPage();
             sliderPageOne.setTitle("欢迎使用");
@@ -40,9 +45,15 @@ public class WelcomeActivity extends AppIntro2 {
 
             showSkipButton(false);
         }else{
-            Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
+            if(mDBUtils.Query().getCount() != 0){
+                Intent intent = new Intent(WelcomeActivity.this, LockActivity.class);
+                startActivity(intent);
+                finish();
+            }else {
+                Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
         }
     }
 
