@@ -3,14 +3,17 @@ package com.yyd.fjsd.filemanager.activitys;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
@@ -18,10 +21,20 @@ import android.widget.Toast;
 import com.andrognito.patternlockview.PatternLockView;
 import com.andrognito.patternlockview.listener.PatternLockViewListener;
 import com.andrognito.patternlockview.utils.PatternLockUtils;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.yyd.fjsd.filemanager.MyApplication;
 import com.yyd.fjsd.filemanager.R;
 import com.yyd.fjsd.filemanager.db.DBUtils;
+import com.yyd.fjsd.filemanager.utils.FileUtil;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import skin.support.SkinCompatManager;
@@ -312,6 +325,72 @@ public class SettingActivity extends AppCompatActivity {
             }
         });
 
+        //StorageSpace
+        mStorage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Log.v("yang", FileUtil.getTotalStorageSpace()+" bytes, " + FileUtil.sizeTransform(FileUtil.getTotalStorageSpace()));
+                //Log.v("yang", FileUtil.getAvailableSpace()+" bytes, " + FileUtil.sizeTransform(FileUtil.getAvailableSpace()));
+                //获取存储空间
+                long availableSpace = FileUtil.getAvailableSpace();
+                long usedSpace = FileUtil.getTotalStorageSpace() - availableSpace;
+
+                View storage_space = getLayoutInflater().inflate(R.layout.dialog_storage_space, null);
+                PieChart space_chart = storage_space.findViewById(R.id.space_chart);
+                space_chart.setUsePercentValues(true); //使用百分比
+                space_chart.getDescription().setEnabled(false); //关闭描述label
+                space_chart.setDrawHoleEnabled(false);  //false:扇形， true：甜甜圈
+                //图例的位置(位于右上角)
+                Legend l = space_chart.getLegend();
+                l.setTextSize(13);
+                l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+                l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+                l.setOrientation(Legend.LegendOrientation.VERTICAL);    //垂直布局
+                l.setDrawInside(false);
+                l.setXEntrySpace(7f);
+                l.setYEntrySpace(0f);
+                l.setYOffset(0f);
+
+                //数据
+                ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
+                entries.add(new PieEntry(availableSpace, "可用空间:" + FileUtil.sizeTransform(availableSpace)));
+                entries.add(new PieEntry(usedSpace, "已用空间:" + FileUtil.sizeTransform(usedSpace)));
+                PieDataSet dataSet = new PieDataSet(entries, "内部存储空间");
+                //颜色
+                ArrayList<Integer> colors = new ArrayList<Integer>();
+                for (int c : ColorTemplate.VORDIPLOM_COLORS)
+                    colors.add(c);
+                for (int c : ColorTemplate.JOYFUL_COLORS)
+                    colors.add(c);
+                dataSet.setColors(colors);
+
+                PieData data = new PieData(dataSet);
+                data.setValueFormatter(new PercentFormatter());
+                data.setValueTextSize(11f);
+                data.setValueTextColor(Color.WHITE);
+                space_chart.setData(data);
+                space_chart.highlightValues(null);
+                //刷新
+                space_chart.invalidate();
+
+                //显示Dialog
+                AlertDialog dialog = new AlertDialog.Builder(SettingActivity.this)
+                        .setView(storage_space)
+                        .create();
+                dialog.show();
+                /*
+                //显示的大小为屏幕的3/4
+                DisplayMetrics dm = getResources().getDisplayMetrics();
+                int heigth = dm.heightPixels;
+                int width = dm.widthPixels;
+                WindowManager.LayoutParams params =
+                        dialog.getWindow().getAttributes();
+                params.width = width/4*3;
+                params.height = heigth/4*3;
+                dialog.getWindow().setAttributes(params);
+                */
+            }
+        });
     }
 
     @Override

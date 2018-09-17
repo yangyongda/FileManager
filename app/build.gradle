@@ -46,4 +46,5 @@ dependencies {
     // skin-support-constraint-layout ConstraintLayout 控件支持[可选]
 
     implementation 'com.andrognito.patternlockview:patternlockview:1.0.0'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
 }

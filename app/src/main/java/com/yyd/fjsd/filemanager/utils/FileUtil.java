@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.StatFs;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -225,6 +226,20 @@ public class FileUtil {
         }
         return true;
 
+    }
+
+    public static long getTotalStorageSpace(){
+        File path = Environment.getExternalStorageDirectory();
+        StatFs stat = new StatFs(path.getPath());
+        //long blockSize = stat.getBlockSizeLong();
+        //long totalBlocks = stat.getBlockCountLong();
+        return stat.getTotalBytes();
+    }
+
+    public static long getAvailableSpace(){
+        File path = Environment.getExternalStorageDirectory();
+        StatFs stat = new StatFs(path.getPath());
+        return stat.getAvailableBytes();
     }
 }
 

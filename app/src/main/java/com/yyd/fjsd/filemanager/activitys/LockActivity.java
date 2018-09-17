@@ -50,6 +50,8 @@ public class LockActivity extends AppCompatActivity {
                     Intent main = new Intent(LockActivity.this, MainActivity.class);
                     startActivity(main);
                     finish();
+                }else{
+                    mPatternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);
                 }
             }
 
