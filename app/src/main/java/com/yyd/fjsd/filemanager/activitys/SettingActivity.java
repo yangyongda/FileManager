@@ -391,6 +391,18 @@ public class SettingActivity extends AppCompatActivity {
                 */
             }
         });
+
+        //About
+        mAbout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AlertDialog.Builder(SettingActivity.this)
+                        .setView(R.layout.about_layout)
+                        .create()
+                        .show();
+            }
+        });
+
     }
 
     @Override

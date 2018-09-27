@@ -14,4 +14,7 @@
     <string name="setting">设置</string>
     <string name="about">关于</string>
     <string name="modify_lock">修改图形锁</string>
+    <string name="kb_filemanager">KB文件管理器</string>
+    <string name="author"><b>作者: yongda.yang</b></string>
+    <string name="github_url"><a href="https://github.com/yangyongda">https://github.com/yangyongda</a></string>
 </resources>

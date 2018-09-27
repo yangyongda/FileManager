@@ -1,5 +1,6 @@
 package com.yyd.fjsd.filemanager.adapters;
 
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,11 +31,31 @@ public class MainRecyclerViewAdapter extends RecyclerView.Adapter<MainRecyclerVi
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         //填充数据
         Type type = mTypes.get(position);
         holder.icon.setImageResource(type.getIcon());
         holder.name.setText(type.getName());
+
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switch (position){
+                    case 0:
+                        break;
+                    case 1:
+                        break;
+                    case 2:
+                        break;
+                    case 3:
+                        break;
+                    case 4:
+                        break;
+                    case 5:
+                        break;
+                }
+            }
+        });
     }
 
 
@@ -47,10 +68,12 @@ public class MainRecyclerViewAdapter extends RecyclerView.Adapter<MainRecyclerVi
     class ViewHolder extends RecyclerView.ViewHolder {
         ImageView icon;
         TextView name;
+        CardView cardView;
         public ViewHolder(View itemView) {
             super(itemView);
             icon = itemView.findViewById(R.id.icon);
             name = itemView.findViewById(R.id.name);
+            cardView = itemView.findViewById(R.id.type_item);
         }
     }
 }

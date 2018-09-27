@@ -65,6 +65,7 @@ public class FileUtil {
     }
 
     public static String sizeTransform(long size) {
+        long point = 0; //小数点后的值
         //如果字节数少于1024，则直接以B为单位，否则先除于1024，后3位因太少无意义
         if (size < 1024) {
             return String.valueOf(size) + "B";
@@ -77,19 +78,19 @@ public class FileUtil {
         if (size < 1024) {
             return String.valueOf(size) + "KB";
         } else {
+            point = size % 1024; //小数点后的值
             size = size / 1024;
         }
         if (size < 1024) {
             //因为如果以MB为单位的话，要保留最后1位小数，
-            //因此，把此数乘以100之后再取余
-            size = size * 100;
-            return String.valueOf((size / 100)) + "."
-                    + String.valueOf((size % 100)) + "MB";
+            return String.valueOf(size) + "."
+                    + String.valueOf((point * 10) / 1024) + "MB";
         } else {
-            //否则如果要以GB为单位的，先除于1024再作同样的处理
-            size = size * 100 / 1024;
-            return String.valueOf((size / 100)) + "."
-                    + String.valueOf((size % 100)) + "GB";
+            //否则如果要以GB为单位的，要保留最后两个小数
+            point = size % 1024; //小数点后的值
+            size = size / 1024;
+            return String.valueOf(size) + "."
+                    + String.valueOf(((point * 100) / 1024)) + "GB";
         }
     }
 
