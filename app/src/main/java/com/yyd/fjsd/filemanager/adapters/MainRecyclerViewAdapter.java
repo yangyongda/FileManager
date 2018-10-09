@@ -65,14 +65,19 @@ public class MainRecyclerViewAdapter extends RecyclerView.Adapter<MainRecyclerVi
                         new LoadFilterFileTask(mContext, mHandler).execute(TypeConstant.PICTURE);
                         break;
                     case TypeConstant.MUSIC:
+                        new LoadFilterFileTask(mContext, mHandler).execute(TypeConstant.MUSIC);
                         break;
                     case TypeConstant.VIDEO:
+                        new LoadFilterFileTask(mContext, mHandler).execute(TypeConstant.VIDEO);
                         break;
                     case TypeConstant.DOCUMENT:
+                        new LoadFilterFileTask(mContext, mHandler).execute(TypeConstant.DOCUMENT);
                         break;
                     case TypeConstant.APK:
+                        new LoadFilterFileTask(mContext, mHandler).execute(TypeConstant.APK);
                         break;
                     case TypeConstant.ZIP:
+                        new LoadFilterFileTask(mContext, mHandler).execute(TypeConstant.ZIP);
                         break;
                 }
             }

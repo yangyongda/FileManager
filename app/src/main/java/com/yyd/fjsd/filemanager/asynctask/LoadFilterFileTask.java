@@ -22,6 +22,7 @@ public class LoadFilterFileTask extends AsyncTask<Integer, Integer, Boolean> {
     private Context mContext;
     private Handler mHandler;
     private List<String> filterFiles;
+    private int fileType;
 
     public LoadFilterFileTask(Context context, Handler handler){
         mContext = context;
@@ -32,19 +33,25 @@ public class LoadFilterFileTask extends AsyncTask<Integer, Integer, Boolean> {
     @Override
     protected Boolean doInBackground(Integer... type) {
         boolean status = false;
+        fileType = type[0];
         switch (type[0]){
             case TypeConstant.PICTURE:
                 status = getAllFilePath(FileUtil.getInterPath(), mContext.getResources().getStringArray(R.array.picture));
                 break;
             case TypeConstant.MUSIC:
+                status = getAllFilePath(FileUtil.getInterPath(), mContext.getResources().getStringArray(R.array.music));
                 break;
             case TypeConstant.VIDEO:
+                status = getAllFilePath(FileUtil.getInterPath(), mContext.getResources().getStringArray(R.array.video));
                 break;
             case TypeConstant.DOCUMENT:
+                status = getAllFilePath(FileUtil.getInterPath(), mContext.getResources().getStringArray(R.array.document));
                 break;
             case TypeConstant.APK:
+                status = getAllFilePath(FileUtil.getInterPath(), mContext.getResources().getStringArray(R.array.apk));
                 break;
             case TypeConstant.ZIP:
+                status = getAllFilePath(FileUtil.getInterPath(), mContext.getResources().getStringArray(R.array.zip));
                 break;
         }
         return status;
@@ -54,7 +61,7 @@ public class LoadFilterFileTask extends AsyncTask<Integer, Integer, Boolean> {
     protected void onPostExecute(Boolean status) {
         if(status){
             Message message = new Message();
-            message.what = TypeConstant.PICTURE;
+            message.what = fileType;    //文件类型
             message.obj = filterFiles;
             mHandler.sendMessage(message);
         }else{

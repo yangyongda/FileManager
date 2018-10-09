@@ -20,4 +20,29 @@
         <item>.jpeg</item>
         <item>.png</item>
     </string-array>
+
+    <string-array name="music">
+        <item>.mp3</item>
+        <item>.wma</item>
+    </string-array>
+
+    <string-array name="video">
+        <item>.mp4</item>
+        <item>.avi</item>
+    </string-array>
+
+    <string-array name="document">
+        <item>.txt</item>
+        <item>.pdf</item>
+        <item>.doc</item>
+    </string-array>
+
+    <string-array name="apk">
+        <item>.apk</item>
+    </string-array>
+
+    <string-array name="zip">
+        <item>.zip</item>
+        <item>.rar</item>
+    </string-array>
 </resources>

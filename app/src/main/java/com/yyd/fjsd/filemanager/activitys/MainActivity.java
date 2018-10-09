@@ -35,6 +35,7 @@ import com.yyd.fjsd.filemanager.bean.MyFile;
 import com.yyd.fjsd.filemanager.bean.Type;
 import com.yyd.fjsd.filemanager.fragment.FileListFragment;
 import com.yyd.fjsd.filemanager.fragment.MainFragment;
+import com.yyd.fjsd.filemanager.fragment.MusicFragment;
 import com.yyd.fjsd.filemanager.fragment.PictureFragment;
 import com.yyd.fjsd.filemanager.utils.FileUtil;
 import com.yyd.fjsd.filemanager.utils.FragmentList;
@@ -71,11 +72,19 @@ public class MainActivity extends AppCompatActivity {
                     transaction.commit();
                     break;
                 case TypeConstant.PICTURE:
-                    ArrayList<String> filterFiles = (ArrayList<String>)msg.obj;
+                    ArrayList<String> pictureFiles = (ArrayList<String>)msg.obj;
                     //PictureFragment
-                    PictureFragment pictureFragment = PictureFragment.newInstance(filterFiles);
+                    PictureFragment pictureFragment = PictureFragment.newInstance(pictureFiles);
                     transaction.replace(R.id.primary_content, pictureFragment);
                     transaction.commit();
+                    break;
+                case TypeConstant.MUSIC:
+                    ArrayList<String> musicFiles = (ArrayList<String>)msg.obj;
+                    //MusicFragment
+                    MusicFragment musicFragment = MusicFragment.newInstance(musicFiles);
+                    transaction.replace(R.id.primary_content, musicFragment);
+                    transaction.commit();
+
                     break;
             }
         }
