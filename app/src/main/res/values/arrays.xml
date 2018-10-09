@@ -14,4 +14,10 @@
         <item>清新</item>
         <item>黑夜</item>
     </string-array>
+
+    <string-array name="picture">
+        <item>.jpg</item>
+        <item>.jpeg</item>
+        <item>.png</item>
+    </string-array>
 </resources>

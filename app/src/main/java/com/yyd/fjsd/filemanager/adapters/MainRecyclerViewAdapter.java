@@ -1,5 +1,9 @@
 package com.yyd.fjsd.filemanager.adapters;
 
+import android.content.Context;
+import android.os.Handler;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,23 +13,33 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.yyd.fjsd.filemanager.R;
+import com.yyd.fjsd.filemanager.activitys.MainActivity;
+import com.yyd.fjsd.filemanager.asynctask.LoadFilterFileTask;
 import com.yyd.fjsd.filemanager.bean.Type;
+import com.yyd.fjsd.filemanager.fragment.LoadFragment;
+import com.yyd.fjsd.filemanager.utils.TypeConstant;
 
 import java.util.ArrayList;
-import java.util.List;
+
+
 
 public class MainRecyclerViewAdapter extends RecyclerView.Adapter<MainRecyclerViewAdapter.ViewHolder> {
 
     private ArrayList<Type> mTypes;
+    private Context mContext;
+    private Handler mHandler;
+    private View view;
 
-    public MainRecyclerViewAdapter(ArrayList<Type> types){
+    public MainRecyclerViewAdapter(ArrayList<Type> types, Context context, Handler handler){
         mTypes = types;
+        mContext = context;
+        mHandler = handler;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         //加载布局
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.type__item_layout, parent, false);
+        view = LayoutInflater.from(parent.getContext()).inflate(R.layout.type__item_layout, parent, false);
         ViewHolder holder = new ViewHolder(view);
         return holder;
     }
@@ -40,18 +54,25 @@ public class MainRecyclerViewAdapter extends RecyclerView.Adapter<MainRecyclerVi
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //进入加载页面，提高用户体验
+                LoadFragment loadFragment = new LoadFragment();
+                FragmentManager fragmentManager = ((MainActivity)mContext).getSupportFragmentManager();
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.replace(R.id.primary_content, loadFragment);
+                transaction.commit();
                 switch (position){
-                    case 0:
+                    case TypeConstant.PICTURE:
+                        new LoadFilterFileTask(mContext, mHandler).execute(TypeConstant.PICTURE);
                         break;
-                    case 1:
+                    case TypeConstant.MUSIC:
                         break;
-                    case 2:
+                    case TypeConstant.VIDEO:
                         break;
-                    case 3:
+                    case TypeConstant.DOCUMENT:
                         break;
-                    case 4:
+                    case TypeConstant.APK:
                         break;
-                    case 5:
+                    case TypeConstant.ZIP:
                         break;
                 }
             }

@@ -45,6 +45,12 @@ dependencies {
     implementation 'skin.support:skin-support-constraint-layout:3.1.0-beta1'
     // skin-support-constraint-layout ConstraintLayout 控件支持[可选]
 
+    //图形锁
     implementation 'com.andrognito.patternlockview:patternlockview:1.0.0'
+    //图表
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
+    //图片加载
+    implementation 'com.github.bumptech.glide:glide:3.7.0'
+    //进度条
+    implementation 'com.wang.avi:library:2.1.3'
 }

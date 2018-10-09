@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.yyd.fjsd.filemanager.R;
+import com.yyd.fjsd.filemanager.activitys.MainActivity;
 import com.yyd.fjsd.filemanager.adapters.MainRecyclerViewAdapter;
 import com.yyd.fjsd.filemanager.bean.Type;
 
@@ -57,7 +58,7 @@ public class MainFragment extends Fragment {
         //设置RecyclerView
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this.getContext(), 2);
         mRecyclerView.setLayoutManager(gridLayoutManager);
-        MainRecyclerViewAdapter adapter = new MainRecyclerViewAdapter(mTypes);
+        MainRecyclerViewAdapter adapter = new MainRecyclerViewAdapter(mTypes, this.getActivity(), ((MainActivity)this.getActivity()).getHandler());
         mRecyclerView.setAdapter(adapter);
         return view;
     }

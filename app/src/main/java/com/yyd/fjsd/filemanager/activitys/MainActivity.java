@@ -28,15 +28,18 @@ import android.widget.Toast;
 
 import com.yyd.fjsd.filemanager.MyApplication;
 import com.yyd.fjsd.filemanager.R;
+import com.yyd.fjsd.filemanager.adapters.PictureAdapter;
 import com.yyd.fjsd.filemanager.asynctask.CopyFileTask;
 import com.yyd.fjsd.filemanager.asynctask.LoadFileListTask;
 import com.yyd.fjsd.filemanager.bean.MyFile;
 import com.yyd.fjsd.filemanager.bean.Type;
 import com.yyd.fjsd.filemanager.fragment.FileListFragment;
 import com.yyd.fjsd.filemanager.fragment.MainFragment;
+import com.yyd.fjsd.filemanager.fragment.PictureFragment;
 import com.yyd.fjsd.filemanager.utils.FileUtil;
 import com.yyd.fjsd.filemanager.utils.FragmentList;
 import com.yyd.fjsd.filemanager.utils.RunStatus;
+import com.yyd.fjsd.filemanager.utils.TypeConstant;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -57,14 +60,21 @@ public class MainActivity extends AppCompatActivity {
     private Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
             switch(msg.what){
                 case 0x123:
                     ArrayList<MyFile> myFileList = (ArrayList<MyFile>)msg.obj;
                     //FileListFragment
                     FileListFragment fileListFragment = FileListFragment.newInstance(myFileList, 0);
-                    FragmentManager fragmentManager = getSupportFragmentManager();
-                    FragmentTransaction transaction = fragmentManager.beginTransaction();
                     transaction.replace(R.id.primary_content, fileListFragment);
+                    transaction.commit();
+                    break;
+                case TypeConstant.PICTURE:
+                    ArrayList<String> filterFiles = (ArrayList<String>)msg.obj;
+                    //PictureFragment
+                    PictureFragment pictureFragment = PictureFragment.newInstance(filterFiles);
+                    transaction.replace(R.id.primary_content, pictureFragment);
                     transaction.commit();
                     break;
             }
@@ -297,6 +307,10 @@ public class MainActivity extends AppCompatActivity {
         }else{
             super.onBackPressed();
         }
+    }
+
+    public Handler getHandler(){
+        return mHandler;
     }
 
 }
