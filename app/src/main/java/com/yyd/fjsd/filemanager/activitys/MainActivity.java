@@ -33,6 +33,7 @@ import com.yyd.fjsd.filemanager.asynctask.CopyFileTask;
 import com.yyd.fjsd.filemanager.asynctask.LoadFileListTask;
 import com.yyd.fjsd.filemanager.bean.MyFile;
 import com.yyd.fjsd.filemanager.bean.Type;
+import com.yyd.fjsd.filemanager.fragment.DocumentFragment;
 import com.yyd.fjsd.filemanager.fragment.FileListFragment;
 import com.yyd.fjsd.filemanager.fragment.MainFragment;
 import com.yyd.fjsd.filemanager.fragment.MusicFragment;
@@ -91,6 +92,13 @@ public class MainActivity extends AppCompatActivity {
                     //VideoFragment
                     VideoFragment videoFragment = VideoFragment.newInstance(videoFiles);
                     transaction.replace(R.id.primary_content, videoFragment);
+                    transaction.commit();
+                    break;
+                case TypeConstant.DOCUMENT:
+                    ArrayList<String> documentFiles = (ArrayList<String>)msg.obj;
+                    //VideoFragment
+                    DocumentFragment documentFragment = DocumentFragment.newInstance(documentFiles);
+                    transaction.replace(R.id.primary_content, documentFragment);
                     transaction.commit();
                     break;
             }
