@@ -38,7 +38,7 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.ViewHo
             holder.icon.setImageResource(R.drawable.txt);
         else if(fileName.endsWith(".pdf"))
             holder.icon.setImageResource(R.drawable.pdf);
-        else if(fileName.endsWith(".doc"))
+        else if(fileName.endsWith(".doc") || fileName.endsWith(".docx"))
             holder.icon.setImageResource(R.drawable.doc);
 
         holder.name.setText(fileName);

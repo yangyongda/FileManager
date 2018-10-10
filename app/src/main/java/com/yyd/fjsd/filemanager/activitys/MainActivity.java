@@ -40,6 +40,7 @@ import com.yyd.fjsd.filemanager.fragment.MainFragment;
 import com.yyd.fjsd.filemanager.fragment.MusicFragment;
 import com.yyd.fjsd.filemanager.fragment.PictureFragment;
 import com.yyd.fjsd.filemanager.fragment.VideoFragment;
+import com.yyd.fjsd.filemanager.fragment.ZipFragment;
 import com.yyd.fjsd.filemanager.utils.FileUtil;
 import com.yyd.fjsd.filemanager.utils.FragmentList;
 import com.yyd.fjsd.filemanager.utils.RunStatus;
@@ -75,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
                     transaction.commit();
                     break;
                 case TypeConstant.PICTURE:
+                    MyApplication.getInstance().fragment_page = FragmentList.PICTURE_FRAGMENT;
                     ArrayList<String> pictureFiles = (ArrayList<String>)msg.obj;
                     //PictureFragment
                     PictureFragment pictureFragment = PictureFragment.newInstance(pictureFiles);
@@ -82,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
                     transaction.commit();
                     break;
                 case TypeConstant.MUSIC:
+                    MyApplication.getInstance().fragment_page = FragmentList.MUSIC_FRAGMENT;
                     ArrayList<String> musicFiles = (ArrayList<String>)msg.obj;
                     //MusicFragment
                     MusicFragment musicFragment = MusicFragment.newInstance(musicFiles);
@@ -89,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
                     transaction.commit();
                     break;
                 case TypeConstant.VIDEO:
+                    MyApplication.getInstance().fragment_page = FragmentList.VIDEO_FRAGMENT;
                     ArrayList<String> videoFiles = (ArrayList<String>)msg.obj;
                     //VideoFragment
                     VideoFragment videoFragment = VideoFragment.newInstance(videoFiles);
@@ -96,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
                     transaction.commit();
                     break;
                 case TypeConstant.DOCUMENT:
+                    MyApplication.getInstance().fragment_page = FragmentList.DOCUMENT_FRAGMENT;
                     ArrayList<String> documentFiles = (ArrayList<String>)msg.obj;
                     //DocumentFragment
                     DocumentFragment documentFragment = DocumentFragment.newInstance(documentFiles);
@@ -103,10 +108,19 @@ public class MainActivity extends AppCompatActivity {
                     transaction.commit();
                     break;
                 case TypeConstant.APK:
+                    MyApplication.getInstance().fragment_page = FragmentList.APK_FRAGMENT;
                     ArrayList<String> apkFiles = (ArrayList<String>)msg.obj;
                     //ApkFragment
                     ApkFragment apkFragment = ApkFragment.newInstance(apkFiles);
                     transaction.replace(R.id.primary_content, apkFragment);
+                    transaction.commit();
+                    break;
+                case TypeConstant.ZIP:
+                    MyApplication.getInstance().fragment_page = FragmentList.ZIP_FRAGMENT;
+                    ArrayList<String> zipFiles = (ArrayList<String>)msg.obj;
+                    //ApkFragment
+                    ZipFragment zipFragment = ZipFragment.newInstance(zipFiles);
+                    transaction.replace(R.id.primary_content, zipFragment);
                     transaction.commit();
                     break;
             }
@@ -175,6 +189,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.home:
+                        MyApplication.getInstance().prePath.clear(); //返回主页后清除
                         MyApplication.getInstance().fragment_page = FragmentList.MAIN_FRAGMENT;
                         invalidateOptionsMenu(); //刷新OptionsMenu
                         MainFragment fragment = MainFragment.newInstance(mTypes);
@@ -336,6 +351,21 @@ public class MainActivity extends AppCompatActivity {
             FragmentTransaction transaction = fragmentManager.beginTransaction();
             transaction.replace(R.id.primary_content, fileListFragment);
             transaction.commit();
+        }else if(MyApplication.getInstance().fragment_page == FragmentList.PICTURE_FRAGMENT ||
+                MyApplication.getInstance().fragment_page == FragmentList.MUSIC_FRAGMENT ||
+                MyApplication.getInstance().fragment_page == FragmentList.VIDEO_FRAGMENT ||
+                MyApplication.getInstance().fragment_page == FragmentList.DOCUMENT_FRAGMENT ||
+                MyApplication.getInstance().fragment_page == FragmentList.APK_FRAGMENT ||
+                MyApplication.getInstance().fragment_page == FragmentList.ZIP_FRAGMENT ) {
+            //返回主页
+            MyApplication.getInstance().fragment_page = FragmentList.MAIN_FRAGMENT;
+            invalidateOptionsMenu(); //刷新OptionsMenu
+            MainFragment fragment = MainFragment.newInstance(mTypes);
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.replace(R.id.primary_content, fragment);
+            transaction.commit();
+
         }else{
             super.onBackPressed();
         }

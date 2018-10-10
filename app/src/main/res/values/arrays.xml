@@ -35,6 +35,7 @@
         <item>.txt</item>
         <item>.pdf</item>
         <item>.doc</item>
+        <item>.docx</item>
     </string-array>
 
     <string-array name="apk">

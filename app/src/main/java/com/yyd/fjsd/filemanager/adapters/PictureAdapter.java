@@ -1,6 +1,7 @@
 package com.yyd.fjsd.filemanager.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
@@ -8,6 +9,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,11 +46,22 @@ public class PictureAdapter extends RecyclerView.Adapter<PictureAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         Glide.with(mContext)
                 .load(imageList.get(position))
                 .centerCrop()
                 .into(holder.image);
+
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent mIntent = new Intent();
+                mIntent.setAction(android.content.Intent.ACTION_VIEW);
+                Uri uri = Uri.parse("file://" + imageList.get(position));
+                mIntent.setDataAndType(uri , "image/jpeg");
+                mContext.startActivity(mIntent);
+            }
+        });
     }
 
     @Override
@@ -58,10 +71,12 @@ public class PictureAdapter extends RecyclerView.Adapter<PictureAdapter.ViewHold
 
     class ViewHolder extends RecyclerView.ViewHolder {
         ImageView image;
+        CardView cardView;
 
         public ViewHolder(View itemView) {
             super(itemView);
             image = itemView.findViewById(R.id.image);
+            cardView = itemView.findViewById(R.id.pictureCardView);
 
         }
     }
