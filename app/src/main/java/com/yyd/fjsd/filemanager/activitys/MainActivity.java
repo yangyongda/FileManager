@@ -37,6 +37,7 @@ import com.yyd.fjsd.filemanager.fragment.FileListFragment;
 import com.yyd.fjsd.filemanager.fragment.MainFragment;
 import com.yyd.fjsd.filemanager.fragment.MusicFragment;
 import com.yyd.fjsd.filemanager.fragment.PictureFragment;
+import com.yyd.fjsd.filemanager.fragment.VideoFragment;
 import com.yyd.fjsd.filemanager.utils.FileUtil;
 import com.yyd.fjsd.filemanager.utils.FragmentList;
 import com.yyd.fjsd.filemanager.utils.RunStatus;
@@ -84,7 +85,13 @@ public class MainActivity extends AppCompatActivity {
                     MusicFragment musicFragment = MusicFragment.newInstance(musicFiles);
                     transaction.replace(R.id.primary_content, musicFragment);
                     transaction.commit();
-
+                    break;
+                case TypeConstant.VIDEO:
+                    ArrayList<String> videoFiles = (ArrayList<String>)msg.obj;
+                    //VideoFragment
+                    VideoFragment videoFragment = VideoFragment.newInstance(videoFiles);
+                    transaction.replace(R.id.primary_content, videoFragment);
+                    transaction.commit();
                     break;
             }
         }
