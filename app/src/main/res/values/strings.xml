@@ -1,10 +1,9 @@
 <resources>
-    <string name="app_name">FileManager</string>
+    <string name="app_name">嗒嗒文件管理器</string>
     <string name="drawer_open">打开</string>
     <string name="drawer_close">关闭</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="ok">确定</string>
     <string name="new_folder">新建文件夹</string>
     <string name="cancel">取消</string>
@@ -14,7 +13,31 @@
     <string name="setting">设置</string>
     <string name="about">关于</string>
     <string name="modify_lock">修改图形锁</string>
-    <string name="kb_filemanager">KB文件管理器</string>
+    <string name="dada_filemanager">嗒嗒文件管理器</string>
     <string name="author"><b>作者: yongda.yang</b></string>
     <string name="github_url"><a href="https://github.com/yangyongda">https://github.com/yangyongda</a></string>
+    <string name="scaning">扫描中...</string>
+    <string name="new_folder_fail">新建文件夹失败！</string>
+    <string name="input_folder_name">请输入文件夹名称</string>
+    <string name="choose_other_directory">请选择其他路径，要黏贴的文件在当前目录下</string>
+    <string name="choose_theme">选择主题</string>
+    <string name="pattern_lock_add_success">图形密码添加完成</string>
+    <string name="pattern_fail">图形密码不一致，请重新绘制！</string>
+    <string name="draw_repeat">请再绘制一次</string>
+    <string name="pattern_fail_draw_again">图形密码不正确，请重新绘制！</string>
+    <string name="length_greater_than">长度必须大于2</string>
+    <string name="draw_pattern_lock">绘制图形锁</string>
+    <string name="new_pattern_lock">输入新图形</string>
+    <string name="pettern_lock_fail">图形密码错误</string>
+    <string name="pattern_lock_modify_success">图形密码修改完成</string>
+    <string name="input_old_pattern_lock">输入旧图形</string>
+    <string name="availableSpace">可用空间:</string>
+    <string name="usedSpace">已用空间:</string>
+    <string name="interStorageSpace">内部存储空间</string>
+    <string name="welcome">欢迎使用</string>
+    <string name="thanks_for_you">感谢遇到你</string>
+    <string name="go_to_main">进入主页</string>
+    <string name="two_desc">我住长江头，君住长江尾</string>
+    <string name="three_desc">美人卷珠帘，深坐颦蛾眉</string>
+    <string name="repeat_once_exit">再按一次退出</string>
 </resources>

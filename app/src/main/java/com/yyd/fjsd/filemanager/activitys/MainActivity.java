@@ -61,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
     private Button mPaste;
     private Button mCancel;
     private ArrayList<Type> mTypes;
+    // 第一次按下返回键的时间
+    private long firstPressedTime;
 
     private Handler mHandler = new Handler(){
         @Override
@@ -136,6 +138,12 @@ public class MainActivity extends AppCompatActivity {
         initView();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        android.os.Process.killProcess(android.os.Process.myPid());
+    }
+
     private void initData() {
         mTypes = new ArrayList<>();
 
@@ -144,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
         mTypes.add(picture);
         Type music = new Type(R.drawable.music, types[1]);
         mTypes.add(music);
-        Type movie = new Type(R.drawable.movie, types[2]);
+        Type movie = new Type(R.drawable.video, types[2]);
         mTypes.add(movie);
         Type document = new Type(R.drawable.document, types[3]);
         mTypes.add(document);
@@ -236,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
                     if(!new File(MyApplication.getInstance().getSelectedList().get(keyIterator.next())).getParent().equals(MyApplication.getInstance().currPath)){
                         new CopyFileTask(MainActivity.this).execute(iterator);
                     }else{
-                        Toast.makeText(MainActivity.this, "请选择其他路径，要黏贴的文件在当前目录下", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, R.string.choose_other_directory, Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -301,10 +309,10 @@ public class MainActivity extends AppCompatActivity {
                                         transaction.replace(R.id.primary_content, fileListFragment);
                                         transaction.commit();
                                     }else {
-                                        Toast.makeText(MainActivity.this, "新建文件夹失败！", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(MainActivity.this, R.string.new_folder_fail, Toast.LENGTH_SHORT).show();
                                     }
                                 }else{
-                                    Toast.makeText(MainActivity.this, "请输入文件夹名称", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(MainActivity.this, R.string.input_folder_name, Toast.LENGTH_SHORT).show();
                                 }
                             }
                         })
@@ -367,7 +375,12 @@ public class MainActivity extends AppCompatActivity {
             transaction.commit();
 
         }else{
-            super.onBackPressed();
+            if (System.currentTimeMillis() - firstPressedTime < 2000) {
+                super.onBackPressed();
+            } else {
+                Toast.makeText(MainActivity.this, R.string.repeat_once_exit, Toast.LENGTH_SHORT).show();
+                firstPressedTime = System.currentTimeMillis();
+            }
         }
     }
 

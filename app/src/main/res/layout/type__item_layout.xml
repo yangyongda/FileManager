@@ -14,8 +14,8 @@
         android:layout_height="match_parent"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:paddingBottom="14dp"
-        android:paddingTop="14dp">
+        android:paddingBottom="11dp"
+        android:paddingTop="11dp">
 
         <ImageView
             android:id="@+id/icon"

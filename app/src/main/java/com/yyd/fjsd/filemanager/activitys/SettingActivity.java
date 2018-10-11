@@ -98,7 +98,7 @@ public class SettingActivity extends AppCompatActivity {
                 int themeNo = MyApplication.getInstance().getSharedPreferencesHelper().getThemeNo();
 
                 new AlertDialog.Builder(SettingActivity.this)
-                        .setTitle("选择主题")
+                        .setTitle(R.string.choose_theme)
                         .setSingleChoiceItems(R.array.theme, themeNo, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -170,18 +170,18 @@ public class SettingActivity extends AppCompatActivity {
                                     if (PatternLockUtils.patternToString(mPatternLockView, pattern).equals(patternTemp)) {
                                         mDBUtils.insert(1, PatternLockUtils.patternToString(mPatternLockView, pattern));
                                         mModifyLock.setVisibility(View.VISIBLE);    //显示修改图形锁选项
-                                        Toast.makeText(SettingActivity.this, "图形密码添加完成", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(SettingActivity.this, R.string.pattern_lock_add_success, Toast.LENGTH_SHORT).show();
                                         mAlertDialog.dismiss();
                                         mAlertDialog = null;
                                     } else {
                                         mPatternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);
-                                        Toast.makeText(SettingActivity.this, "图形密码不一致，请重新绘制！", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(SettingActivity.this, R.string.pattern_fail, Toast.LENGTH_SHORT).show();
                                         count = 0;
                                     }
                                 } else {
                                     count++;
                                     patternTemp = PatternLockUtils.patternToString(mPatternLockView, pattern);
-                                    Toast.makeText(SettingActivity.this, "请再绘制一次", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(SettingActivity.this, R.string.draw_repeat, Toast.LENGTH_SHORT).show();
                                 }
                             }else{
 
@@ -197,13 +197,13 @@ public class SettingActivity extends AppCompatActivity {
                                         mAlertDialog = null;
                                     } else {
                                         mPatternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);
-                                        Toast.makeText(SettingActivity.this, "图形密码不正确，请重新绘制！", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(SettingActivity.this, R.string.pattern_fail_draw_again, Toast.LENGTH_SHORT).show();
                                     }
 
                             }
                             //mPatternLockView.clearPattern();
                         }else{
-                            Toast.makeText(SettingActivity.this, "长度必须大于2",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SettingActivity.this, R.string.length_greater_than,Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -214,7 +214,7 @@ public class SettingActivity extends AppCompatActivity {
                 });
                 if(isCancel == false) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(SettingActivity.this)
-                            .setTitle("绘制图形锁")
+                            .setTitle(R.string.draw_pattern_lock)
                             .setView(lock_layout)
                             .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                                 @Override
@@ -277,28 +277,28 @@ public class SettingActivity extends AppCompatActivity {
                                     PatternLockUtils.patternToString(mPatternLockView, pattern).equals(DataBasepattern)){
                                 isOldPattern = false;
                                 mPatternLockView.clearPattern();
-                                mAlertDialog.setTitle("输入新图形");
+                                mAlertDialog.setTitle(getString(R.string.new_pattern_lock));
                             }else{
                                 mPatternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);
-                                Toast.makeText(SettingActivity.this, "图形密码错误", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(SettingActivity.this, R.string.pettern_lock_fail, Toast.LENGTH_SHORT).show();
                             }
                         }else {
                             if (count == 1) {
                                 if (PatternLockUtils.patternToString(mPatternLockView, pattern).equals(patternTemp)) {
                                     mDBUtils.update(1, PatternLockUtils.patternToString(mPatternLockView, pattern));
                                     mModifyLock.setVisibility(View.VISIBLE);    //显示修改图形锁选项
-                                    Toast.makeText(SettingActivity.this, "图形密码修改完成", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(SettingActivity.this, R.string.pattern_lock_modify_success, Toast.LENGTH_SHORT).show();
                                     mAlertDialog.dismiss();
                                     mAlertDialog = null;
                                 } else {
                                     mPatternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);
-                                    Toast.makeText(SettingActivity.this, "图形密码不一致，请重新绘制！", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(SettingActivity.this, R.string.pattern_fail, Toast.LENGTH_SHORT).show();
                                     count = 0;
                                 }
                             } else {
                                 count++;
                                 patternTemp = PatternLockUtils.patternToString(mPatternLockView, pattern);
-                                Toast.makeText(SettingActivity.this, "请再绘制一次", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(SettingActivity.this, R.string.draw_repeat, Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
@@ -310,7 +310,7 @@ public class SettingActivity extends AppCompatActivity {
                 });
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(SettingActivity.this)
-                        .setTitle("输入旧图形")
+                        .setTitle(R.string.input_old_pattern_lock)
                         .setView(lock_layout)
                         .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                             @Override
@@ -353,9 +353,9 @@ public class SettingActivity extends AppCompatActivity {
 
                 //数据
                 ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
-                entries.add(new PieEntry(availableSpace, "可用空间:" + FileUtil.sizeTransform(availableSpace)));
-                entries.add(new PieEntry(usedSpace, "已用空间:" + FileUtil.sizeTransform(usedSpace)));
-                PieDataSet dataSet = new PieDataSet(entries, "内部存储空间");
+                entries.add(new PieEntry(availableSpace, getString(R.string.availableSpace) + FileUtil.sizeTransform(availableSpace)));
+                entries.add(new PieEntry(usedSpace, getString(R.string.usedSpace) + FileUtil.sizeTransform(usedSpace)));
+                PieDataSet dataSet = new PieDataSet(entries, getString(R.string.interStorageSpace));
                 //颜色
                 ArrayList<Integer> colors = new ArrayList<Integer>();
                 for (int c : ColorTemplate.VORDIPLOM_COLORS)

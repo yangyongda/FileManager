@@ -23,22 +23,22 @@ public class WelcomeActivity extends AppIntro2 {
 
         if(MyApplication.getInstance().getSharedPreferencesHelper().getFirstStart()) {
             SliderPage sliderPageOne = new SliderPage();
-            sliderPageOne.setTitle("欢迎使用");
+            sliderPageOne.setTitle(getString(R.string.welcome));
             sliderPageOne.setDescription("DaDa FileManager");
             sliderPageOne.setImageDrawable(R.drawable.filemanager);
             sliderPageOne.setBgColor(getResources().getColor(R.color.colorPrimaryDark));
             addSlide(AppIntroFragment.newInstance(sliderPageOne));
 
             SliderPage sliderPageTwo = new SliderPage();
-            sliderPageTwo.setTitle("感谢遇到你");
-            sliderPageTwo.setDescription("我住长江头，君住长江尾");
+            sliderPageTwo.setTitle(getString(R.string.thanks_for_you));
+            sliderPageTwo.setDescription(getString(R.string.two_desc));
             sliderPageTwo.setImageDrawable(R.drawable.slide2);
             sliderPageTwo.setBgColor(getResources().getColor(R.color.colorPrimaryDark));
             addSlide(AppIntroFragment.newInstance(sliderPageTwo));
 
             SliderPage sliderPageThree = new SliderPage();
-            sliderPageThree.setTitle("进入主页");
-            sliderPageThree.setDescription("美人卷珠帘，深坐颦蛾眉");
+            sliderPageThree.setTitle(getString(R.string.go_to_main));
+            sliderPageThree.setDescription(getString(R.string.three_desc));
             sliderPageThree.setImageDrawable(R.drawable.slide3);
             sliderPageThree.setBgColor(getResources().getColor(R.color.colorPrimaryDark));
             addSlide(AppIntroFragment.newInstance(sliderPageThree));
