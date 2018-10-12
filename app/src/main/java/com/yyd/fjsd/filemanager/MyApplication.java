@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.yyd.fjsd.filemanager.utils.FileUtil;
 import com.yyd.fjsd.filemanager.utils.FragmentList;
+import com.yyd.fjsd.filemanager.utils.RequestPermissionUtil;
 import com.yyd.fjsd.filemanager.utils.RunStatus;
 import com.yyd.fjsd.filemanager.utils.SharedPreferencesHelper;
 
@@ -44,7 +45,7 @@ public class MyApplication extends Application {
         runStatus = RunStatus.NORMAL_MODE;
         fragment_page = FragmentList.MAIN_FRAGMENT;
         mSelectedList = new HashMap<>();
-
+        RequestPermissionUtil.requestPermission(this);
 
         SkinCompatManager.withoutActivity(this)                         // 基础控件换肤初始化
                 .addInflater(new SkinMaterialViewInflater())            // material design 控件换肤初始化[可选]
